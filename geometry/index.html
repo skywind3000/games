@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometry Wars</title>
+<meta name="description" content="Neon-style endless geometric shooter. WASD to move, mouse to aim and shoot, survive the swarm. Built with GameLib.h, runs entirely in browser via WebAssembly.">
+<meta property="og:title" content="Geometry Wars">
+<meta property="og:description" content="Neon-style endless geometric shooter. WASD to move, mouse to aim and shoot, survive the swarm. Built with GameLib.h, runs entirely in browser via WebAssembly.">
+<meta property="og:image" content="screenshot.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Geometry Wars">
+<meta name="twitter:description" content="Neon-style endless geometric shooter. WASD to move, mouse to aim and shoot, survive the swarm. Built with GameLib.h, runs entirely in browser via WebAssembly.">
+<meta name="twitter:image" content="screenshot.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a1a; }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#loading {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  background: #0a0a1a; z-index: 100; transition: opacity 0.6s;
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+#loading-inner { text-align: center; color: #00ffff; font-family: 'Segoe UI', sans-serif; }
+#loading-inner h1 { font-size: 2em; margin-bottom: 0.5em; letter-spacing: 0.3em; }
+#loading-inner p { font-size: 0.9em; color: #4488aa; }
+#loading-bar { width: 200px; height: 3px; background: #112233; margin: 1em auto 0; border-radius: 2px; }
+#loading-fill { width: 0%; height: 100%; background: #00ffff; border-radius: 2px; transition: width 0.3s; }
+#canvas {
+  display: block;
+  width: 800px;
+  height: 600px;
+  border: 1px solid #1a2a4a;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div id="loading-inner">
+    <h1>GEOMETRY WARS</h1>
+    <p>Loading...</p>
+    <div id="loading-bar"><div id="loading-fill"></div></div>
+  </div>
+</div>
+
+<canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+
+<script>
+var Module = {
+  canvas: document.getElementById('canvas'),
+  setStatus: function(text) {
+    var p = document.querySelector('#loading-inner p');
+    if (p) p.textContent = text || 'Loading...';
+  },
+  monitorRunDependencies: function(left) {
+    var fill = document.getElementById('loading-fill');
+    if (fill) {
+      fill.style.width = (left > 0 ? ((1 - left / 2) * 100) : 100) + '%';
+    }
+  }
+};
+
+(function poll() {
+  var c = document.getElementById('canvas');
+  if (c && c.width >= 100) {
+    document.getElementById('loading').classList.add('hidden');
+    return;
+  }
+  requestAnimationFrame(poll);
+})();
+</script>
+<script async src="geometry.js"></script>
+
+</body>
+</html>
